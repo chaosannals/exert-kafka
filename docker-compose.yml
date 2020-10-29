@@ -1,0 +1,53 @@
+version: '3'
+
+services: 
+    zookeeper:
+        image: zookeeper
+        container_name: zookeeper
+        ports:
+            - 2181:2181
+        networks:
+            - kfknet
+        volumes: 
+            # - D:\Kafka\zookeeper\data
+            - /path/to/kafka/zookeeper/data:/data
+            # - D:\Kafka\zookeeper\datalog
+            - /path/to/kafka/zookeeper/datalog:/datalog
+            # - D:\Kafka\zookeeper\logs
+            - /path/to/kafka/zookeeper/logs:/logs
+    kafka:
+        image: wurstmeister/kafka
+        container_name: kafka-server
+        depends_on: 
+            - zookeeper
+        ports: 
+            - "9092:9092"
+        volumes: 
+            # - D:\Kafka\server:/kafka
+            - /path/to/kafka/server:/kafka
+        environment:
+            KAFKA_ADVERTISED_HOST_NAME: kafka-server
+            KAFKA_CREATE_TOPICS: "exert:1:1"
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        networks:
+            - kfknet
+    manager:
+        image: kafkamanager/kafka-manager
+        container_name: kafka-manager
+        depends_on: 
+            - kafka-server
+        ports:
+            - "39000:9000"
+        environment: 
+            ZK_HOSTS: zookeeper
+            KAFKA_MANAGER_AUTH_ENABLED: 'true'
+            KAFKA_MANAGER_USERNAME: kfkmadmin
+            KAFKA_MANAGER_PASSWORD: kfkmpassword
+        networks: 
+            - kfknet
+
+networks:
+    kfknet:
+        name: kfknet
+        driver: bridge
+

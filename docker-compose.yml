@@ -27,8 +27,9 @@ services:
             - /path/to/kafka/server:/kafka
         environment:
             KAFKA_ADVERTISED_HOST_NAME: kafka-broker
-            KAFKA_CREATE_TOPICS: "exert:1:1"
+            KAFKA_CREATE_TOPICS: "exert:1:3"
             KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+            KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
         networks:
             - kfknet
     manager:

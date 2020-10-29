@@ -17,7 +17,7 @@ services:
             - /path/to/kafka/zookeeper/logs:/logs
     kafka:
         image: wurstmeister/kafka
-        container_name: kafka-server
+        container_name: kafka-broker
         depends_on: 
             - zookeeper
         ports: 
@@ -26,7 +26,7 @@ services:
             # - D:\Kafka\server:/kafka
             - /path/to/kafka/server:/kafka
         environment:
-            KAFKA_ADVERTISED_HOST_NAME: kafka-server
+            KAFKA_ADVERTISED_HOST_NAME: kafka-broker
             KAFKA_CREATE_TOPICS: "exert:1:1"
             KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
         networks:
@@ -35,7 +35,7 @@ services:
         image: kafkamanager/kafka-manager
         container_name: kafka-manager
         depends_on: 
-            - kafka-server
+            - kafka-broker
         ports:
             - "39000:9000"
         environment: 
